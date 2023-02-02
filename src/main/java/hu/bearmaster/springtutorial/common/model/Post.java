@@ -10,6 +10,12 @@ public class Post {
 
     private User author;
 
+    public Post(String title, String description, User author) {
+        this.title = title;
+        this.description = description;
+        this.author = author;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -40,5 +46,9 @@ public class Post {
                 .add("title='" + title + "'")
                 .add("author=" + author)
                 .toString();
+    }
+
+    public static Post of(String title, User author) {
+        return new Post(title, "<description comes here>", author);
     }
 }
