@@ -3,13 +3,11 @@ package hu.bearmaster.springtutorial.common.services;
 import hu.bearmaster.springtutorial.common.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Component
 public class InMemoryUserService implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryUserService.class);

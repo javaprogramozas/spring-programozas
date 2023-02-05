@@ -6,13 +6,10 @@ import hu.bearmaster.springtutorial.common.model.UserRole;
 import hu.bearmaster.springtutorial.common.services.publishers.PublisherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class PostService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
@@ -22,7 +19,7 @@ public class PostService {
     private final PublisherService publisherService;
     private final List<Post> posts = new ArrayList<>();
 
-    public PostService(UserService userService, @Qualifier("push") PublisherService publisherService) {
+    public PostService(UserService userService, PublisherService publisherService) {
         this.userService = userService;
         this.publisherService = publisherService;
     }
