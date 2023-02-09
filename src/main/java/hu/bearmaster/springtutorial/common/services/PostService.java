@@ -4,8 +4,12 @@ import hu.bearmaster.springtutorial.common.model.Post;
 import hu.bearmaster.springtutorial.common.model.User;
 import hu.bearmaster.springtutorial.common.model.UserRole;
 import hu.bearmaster.springtutorial.common.services.publishers.PublisherService;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +20,12 @@ public class PostService {
 
     private final UserService userService;
 
-    private final PublisherService publisherService;
+    private PublisherService publisherService;
     private final List<Post> posts = new ArrayList<>();
 
-    public PostService(UserService userService, PublisherService publisherService) {
+    public PostService(UserService userService) {
         this.userService = userService;
-        this.publisherService = publisherService;
+        LOGGER.info("Post service constructor called");
     }
 
     public void createPost(Post post) {
@@ -40,5 +44,22 @@ public class PostService {
         return posts.stream()
                 .filter(post -> post.getAuthor().equals(author))
                 .toList();
+    }
+
+    @Autowired
+    @Qualifier("push")
+    public void setPublisherService(PublisherService publisherService) {
+        LOGGER.info("Publisher service has been injected");
+        this.publisherService = publisherService;
+    }
+
+    @PostConstruct
+    private void readyToWork() throws Exception {
+        LOGGER.info("Post service has been created: {}", publisherService);
+    }
+
+    @PreDestroy
+    private void itsOverAnakin() throws Exception {
+        LOGGER.info("Post service is being destroyed");
     }
 }
