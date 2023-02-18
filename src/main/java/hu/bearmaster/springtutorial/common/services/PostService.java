@@ -8,13 +8,16 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostService {
+public class PostService implements ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
 
@@ -51,6 +54,11 @@ public class PostService {
     public void setPublisherService(PublisherService publisherService) {
         LOGGER.info("Publisher service has been injected");
         this.publisherService = publisherService;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        LOGGER.info("Created in context: {}", applicationContext.getDisplayName());
     }
 
     @PostConstruct
