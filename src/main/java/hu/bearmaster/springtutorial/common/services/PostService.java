@@ -50,7 +50,7 @@ public class PostService implements ApplicationContextAware {
     }
 
     @Autowired
-    @Qualifier("push")
+    //@Qualifier("push")
     public void setPublisherService(PublisherService publisherService) {
         LOGGER.info("Publisher service has been injected");
         this.publisherService = publisherService;
