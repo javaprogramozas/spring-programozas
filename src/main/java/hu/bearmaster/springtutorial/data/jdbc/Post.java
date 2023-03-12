@@ -19,6 +19,10 @@ public class Post {
     private Long authorId;
     
     private int comments;
+
+    private String topic;
+
+    private int version;
     
     public Post() {
     }
@@ -104,11 +108,24 @@ public class Post {
         this.comments = comments;
     }
 
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "Post [id=" + id + ", title=" + title + "]";
     }
-    
-    
-
 }

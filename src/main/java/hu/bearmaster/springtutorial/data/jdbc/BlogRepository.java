@@ -1,8 +1,11 @@
 package hu.bearmaster.springtutorial.data.jdbc;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -16,6 +19,7 @@ import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class BlogRepository {
@@ -72,6 +76,23 @@ public class BlogRepository {
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
+    }
+
+    public long addNewPost2(Post post) {
+        SimpleJdbcInsert insertPost = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("posts")
+                .usingGeneratedKeyColumns("id")
+                .usingColumns("title", "description", "created_on", "slug", "topic", "version");
+        Map<String, ?> parameters = Map.of(
+                "title", post.getTitle(),
+                "description", post.getDescription(),
+                "created_on", Timestamp.from(ZonedDateTime.now().toInstant()),
+                "slug", post.getSlug(),
+                "topic", "Spring",
+                "version", 1
+        );
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(post);
+        return insertPost.executeAndReturnKey(parameterSource).longValue();
     }
 
     // tetszőleges utasítás végrehajtása
