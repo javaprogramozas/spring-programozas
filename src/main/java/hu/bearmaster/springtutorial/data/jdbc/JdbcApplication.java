@@ -13,8 +13,30 @@ public class JdbcApplication {
         ApplicationContext context = new AnnotationConfigApplicationContext(DatabaseConfiguration.class);
 
         BlogRepository repository = context.getBean(BlogRepository.class);
-        String title = repository.getPostTitle();
 
-        LOGGER.info("Post title: {}", title);
+        LOGGER.info("Cím: {}", repository.getPostTitle());
+        LOGGER.info("Bejegyzések száma: {}", repository.numberOfPostsInTopic("Érdekesség"));
+        LOGGER.info("Bejegyzés id alapján: {}", repository.getPostById(16));
+
+        for (Post post : repository.getAllPosts()) {
+            LOGGER.info("{}", post);
+        }
+
+        repository.increaseLikesOfPost(16);
+        LOGGER.info("Bejegyzés id alapján: {}", repository.getPostById(16));
+
+        long id = repository.addNewPost(newPost());
+        LOGGER.info("Új bejegyzés id-ja: {}", id);
+
+        int maxLikes = repository.getMaximumLikesInTopic("Útmutató");
+        LOGGER.info("Max. like-ok száma: {}", maxLikes);
+    }
+
+    private static Post newPost() {
+        Post post = new Post();
+        post.setTitle("Új bejegyzés");
+        post.setDescription("Ez megint valami teszt, mi?");
+        post.setSlug("/spring-jdbc-test");
+        return post;
     }
 }
