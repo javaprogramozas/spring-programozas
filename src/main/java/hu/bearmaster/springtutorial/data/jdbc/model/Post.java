@@ -1,4 +1,4 @@
-package hu.bearmaster.springtutorial.data.jdbc;
+package hu.bearmaster.springtutorial.data.jdbc.model;
 
 import java.time.ZonedDateTime;
 

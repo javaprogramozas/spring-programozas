@@ -1,5 +1,8 @@
 package hu.bearmaster.springtutorial.data.jdbc;
 
+import hu.bearmaster.springtutorial.data.jdbc.config.DatabaseConfiguration;
+import hu.bearmaster.springtutorial.data.jdbc.model.Post;
+import hu.bearmaster.springtutorial.data.jdbc.repository.BlogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;

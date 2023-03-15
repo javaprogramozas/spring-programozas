@@ -1,5 +1,6 @@
-package hu.bearmaster.springtutorial.data.jdbc;
+package hu.bearmaster.springtutorial.data.jdbc.repository;
 
+import hu.bearmaster.springtutorial.data.jdbc.model.Post;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.MappingSqlQuery;
 

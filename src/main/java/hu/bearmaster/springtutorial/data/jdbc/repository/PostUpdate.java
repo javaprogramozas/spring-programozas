@@ -1,4 +1,4 @@
-package hu.bearmaster.springtutorial.data.jdbc;
+package hu.bearmaster.springtutorial.data.jdbc.repository;
 
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.SqlUpdate;

@@ -1,5 +1,7 @@
-package hu.bearmaster.springtutorial.data.jdbc;
+package hu.bearmaster.springtutorial.data.jdbc.repository;
 
+import hu.bearmaster.springtutorial.data.jdbc.model.Comment;
+import hu.bearmaster.springtutorial.data.jdbc.model.Post;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -49,7 +51,7 @@ public class BlogRepository {
     // row mapper
     public Post getPostById(long id) {
         //return jdbcTemplate.queryForObject("SELECT * FROM posts WHERE id = ?", this::mapPost, id);
-        return postQuery.findObject(16);
+        return postQuery.findObject(id);
     }
 
     // több rekord lekérdezése
@@ -102,6 +104,15 @@ public class BlogRepository {
         );
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(post);
         return insertPost.executeAndReturnKey(parameterSource).longValue();
+    }
+
+    public void addNewComment(Comment comment) {
+        String sql = """
+                     INSERT INTO comments \
+                     (username, body, post_id) \
+                     VALUES (?, ?, ?)
+                     """;
+        jdbcTemplate.update(sql, comment.getUsername(), comment.getBody(), comment.getPostId());
     }
 
     // tetszőleges utasítás végrehajtása
