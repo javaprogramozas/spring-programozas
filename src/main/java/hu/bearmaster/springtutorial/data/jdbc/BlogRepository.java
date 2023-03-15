@@ -26,10 +26,14 @@ public class BlogRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final PostQuery postQuery;
+    private final PostUpdate postUpdate;
 
     public BlogRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.namedJdbcTemplate = new NamedParameterJdbcTemplate(this.jdbcTemplate);
+        this.postQuery = new PostQuery(dataSource);
+        this.postUpdate = new PostUpdate(dataSource);
     }
 
     // Egy oszlopos eredmény
@@ -44,7 +48,8 @@ public class BlogRepository {
 
     // row mapper
     public Post getPostById(long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM posts WHERE id = ?", this::mapPost, id);
+        //return jdbcTemplate.queryForObject("SELECT * FROM posts WHERE id = ?", this::mapPost, id);
+        return postQuery.findObject(16);
     }
 
     // több rekord lekérdezése
@@ -55,6 +60,10 @@ public class BlogRepository {
     // INSERT, UPDATE, DELETE
     public void increaseLikesOfPost(long id) {
         jdbcTemplate.update("UPDATE posts SET likes = likes + 1 WHERE id = ?", id);
+    }
+
+    public void updateTitleAndDescription(long id, String title, String description) {
+        postUpdate.updatePostTitleAndDescriptionById(id, title, description);
     }
 
     // generált kulcsok megszerzése

@@ -19,7 +19,7 @@ public class JdbcApplication {
         LOGGER.info("Cím: {}", repository.getPostTitle());
         LOGGER.info("Bejegyzések száma: {}", repository.numberOfPostsInTopic("Érdekesség"));
         LOGGER.info("Bejegyzés id alapján: {}", repository.getPostById(16));
-
+        repository.updateTitleAndDescription(39, "Ennek mi értelme?", "Ez egy leírás?!");
         for (Post post : repository.getAllPosts()) {
             LOGGER.info("{}", post);
         }
