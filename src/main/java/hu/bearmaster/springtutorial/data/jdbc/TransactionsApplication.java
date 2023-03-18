@@ -21,7 +21,8 @@ public class TransactionsApplication {
         LOGGER.info("Like-ok száma: {}", post.getLikes());
 
         //blogService.addCommentAndUpdateLikes(49, null, "Sanyi");
-        blogService.dontDoThisAtHome(49);
+        //blogService.dontDoThisAtHome(49);
+        blogService.addCommentAndUpdateLikesWithTransactionManager(49, "valami rossz", "Béla");
 
         post = blogService.getPostById(49);
         LOGGER.info("Like-ok száma: {}", post.getLikes());
