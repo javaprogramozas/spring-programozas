@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedNativeQueries;
+import jakarta.persistence.NamedNativeQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -17,6 +19,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
 
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "User.usersWithPalindromeName",
+                resultClass = User.class,
+                query = """
+                    SELECT u.id, u.username, u.status, u.created_at
+                    FROM blogs.users u
+                    WHERE lower(u.username) = reverse(lower(u.username))
+                    """)
+})
 @Entity
 @Table(name = "users", schema = "blogs")
 @SequenceGenerator(name = "userIdGenerator", sequenceName = "users_seq", schema = "blogs", initialValue = 1, allocationSize = 1)

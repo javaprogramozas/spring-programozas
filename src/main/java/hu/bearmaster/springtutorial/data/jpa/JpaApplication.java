@@ -33,6 +33,10 @@ public class JpaApplication {
         LOGGER.info("Most recent post: {}", postRepository.findTop3ByOrderByCreatedOnDesc());
 
         LOGGER.info("Active user posts: {}", postRepository.findAllByAuthorStatus(UserStatus.ACTIVE));
+
+        LOGGER.info("Users with more than 3 posts: {}", userRepository.findAllUsersWithPostsMoreThan(3));
+
+        LOGGER.info("Posts with pattern 'szám': {}", postRepository.findAllPostsByTitleContainsOrDescriptionContains("15%"));
     }
 
 }

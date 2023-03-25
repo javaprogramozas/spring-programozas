@@ -7,11 +7,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import java.time.ZonedDateTime;
 
+@NamedQueries({
+        @NamedQuery(name = "Post.selectPostsByLikesAndTitle",
+                query = """
+                    SELECT p
+                    FROM Post p
+                    WHERE p.likes > :likes
+                    AND LOCATE(:word, p.title) > 0
+                    ORDER BY p.id DESC
+                    """)
+})
 @Entity
 @Table(name = "posts", schema = "blogs")
 @SequenceGenerator(name = "postIdGenerator", sequenceName = "posts_seq", schema = "blogs", initialValue = 1, allocationSize = 1)
