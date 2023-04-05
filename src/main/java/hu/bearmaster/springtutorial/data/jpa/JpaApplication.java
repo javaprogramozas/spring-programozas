@@ -6,6 +6,11 @@ import hu.bearmaster.springtutorial.data.jpa.model.User;
 import hu.bearmaster.springtutorial.data.jpa.model.UserStatus;
 import hu.bearmaster.springtutorial.data.jpa.repository.PostRepository;
 import hu.bearmaster.springtutorial.data.jpa.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -16,9 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
-import java.util.Optional;
 
 public class JpaApplication {
 
@@ -48,7 +53,8 @@ public class JpaApplication {
         //sortingExample(postRepository);
         //pagingExample(postRepository);
 
-        queryByExample(userRepository, postRepository);
+        //queryByExample(userRepository, postRepository);
+        predicates(postRepository, context.getBean(EntityManager.class));
     }
 
     private static void sortingExample(PostRepository postRepository) {
@@ -108,5 +114,25 @@ public class JpaApplication {
 
         LOGGER.info("Posts by example: {}", posts);
 
+    }
+
+    private static void predicates(PostRepository postRepository, EntityManager entityManager) {
+        // SELECT p FROM Post p WHERE p.topic = :topic AND p.description LIKE %:pattern%
+//        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<Post> query = builder.createQuery(Post.class);
+//        Root<Post> root = query.from(Post.class);
+//        query.select(root);
+//        Predicate predicate = builder.and(
+//                builder.equal(root.get("topic"), "Érdekesség"),
+//                builder.like(root.get("title"), "%Mi%"));
+//        query.where(predicate);
+//
+//        List<Post> posts = entityManager.createQuery(query).getResultList();
+
+        Specification<Post> specification = PostRepository.hasTopic("Érdekesség")
+                .and(PostRepository.titleContains("15%"));
+        List<Post> posts = postRepository.findAll(specification);
+
+        LOGGER.info("Posts by criteria: {}", posts);
     }
 }
