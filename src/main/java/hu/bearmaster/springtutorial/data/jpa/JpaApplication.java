@@ -10,12 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 public class JpaApplication {
 
@@ -43,7 +46,9 @@ public class JpaApplication {
         //LOGGER.info("Posts with pattern 'szám': {}", postRepository.findAllPostsByTitleContainsOrDescriptionContains("15%"));
 
         //sortingExample(postRepository);
-        pagingExample(postRepository);
+        //pagingExample(postRepository);
+
+        queryByExample(userRepository, postRepository);
     }
 
     private static void sortingExample(PostRepository postRepository) {
@@ -73,5 +78,35 @@ public class JpaApplication {
                 break;
             }
         }
+    }
+
+    private static void queryByExample(UserRepository userRepository, PostRepository postRepository) {
+        User user = new User();
+        user.setStatus(UserStatus.PENDING);
+        user.setUsername("Ga");
+
+        ExampleMatcher userMatcher = ExampleMatcher.matchingAny()
+                .withStringMatcher(ExampleMatcher.StringMatcher.STARTING);
+        Example<User> userExample = Example.of(user, userMatcher);
+
+        List<User> pendingUsers = userRepository.findAll(userExample);
+
+        LOGGER.info("Pending users: {}", pendingUsers);
+
+        Post post = new Post();
+        post.setTopic("Érdekesség");
+        post.setTitle("?");
+
+        ExampleMatcher postMatcher = ExampleMatcher.matching()
+                .withIgnorePaths("likes")
+                .withMatcher("topic", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withMatcher("title", matcher -> matcher.endsWith());
+        Example<Post> postExample = Example.of(post, postMatcher);
+
+        List<Post> posts = postRepository.findAll(postExample);
+        postRepository.findBy(postExample, query -> query.count());
+
+        LOGGER.info("Posts by example: {}", posts);
+
     }
 }
