@@ -2,6 +2,8 @@ package hu.bearmaster.springtutorial.data.jpa.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import hu.bearmaster.springtutorial.data.jpa.repository.UserRepository;
+import hu.bearmaster.springtutorial.data.jpa.service.UserService;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,5 +56,10 @@ public class JpaConfiguration {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory);
         return txManager;
+    }
+
+    @Bean
+    public UserService userService(UserRepository userRepository) {
+        return new UserService(userRepository);
     }
 }

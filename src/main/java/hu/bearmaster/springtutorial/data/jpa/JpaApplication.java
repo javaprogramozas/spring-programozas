@@ -6,11 +6,8 @@ import hu.bearmaster.springtutorial.data.jpa.model.User;
 import hu.bearmaster.springtutorial.data.jpa.model.UserStatus;
 import hu.bearmaster.springtutorial.data.jpa.repository.PostRepository;
 import hu.bearmaster.springtutorial.data.jpa.repository.UserRepository;
+import hu.bearmaster.springtutorial.data.jpa.service.UserService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -23,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class JpaApplication {
@@ -34,6 +32,7 @@ public class JpaApplication {
 
         UserRepository userRepository = context.getBean(UserRepository.class);
         PostRepository postRepository = context.getBean(PostRepository.class);
+        /*
         User user = userRepository.findById(3L).orElseThrow();
         LOGGER.info("User: {}", user);
 
@@ -47,6 +46,7 @@ public class JpaApplication {
         LOGGER.info("Active user posts: {}", postRepository.findAllByAuthorStatus(UserStatus.ACTIVE));
 
         LOGGER.info("Users with more than 3 posts: {}", userRepository.findAllUsersWithPostsMoreThan(3));
+         */
 
         //LOGGER.info("Posts with pattern 'szám': {}", postRepository.findAllPostsByTitleContainsOrDescriptionContains("15%"));
 
@@ -54,7 +54,9 @@ public class JpaApplication {
         //pagingExample(postRepository);
 
         //queryByExample(userRepository, postRepository);
-        predicates(postRepository, context.getBean(EntityManager.class));
+        //predicates(postRepository, context.getBean(EntityManager.class));
+        dataChanges(userRepository);
+        context.getBean(UserService.class).updateUserStatusToPending(44);
     }
 
     private static void sortingExample(PostRepository postRepository) {
@@ -134,5 +136,13 @@ public class JpaApplication {
         List<Post> posts = postRepository.findAll(specification);
 
         LOGGER.info("Posts by criteria: {}", posts);
+    }
+
+    private static void dataChanges(UserRepository userRepository) {
+        User user = new User("Spring", UserStatus.PENDING, ZonedDateTime.now());
+        user.setId(44L);
+        //User user = userRepository.findById(44L).orElseThrow();
+        userRepository.setUserStatus(44L, UserStatus.ACTIVE);
+
     }
 }
