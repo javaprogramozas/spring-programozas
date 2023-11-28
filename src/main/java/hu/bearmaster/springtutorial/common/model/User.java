@@ -51,4 +51,8 @@ public class User {
     public static User editor(String username, String password) {
         return new User(username, password, UserRole.EDITOR);
     }
+
+    public static User subscriber(String username) {
+        return new User(username, "pw", UserRole.SUBSCRIBER);
+    }
 }

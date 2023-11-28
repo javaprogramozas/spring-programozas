@@ -10,6 +10,8 @@ public class Post {
 
     private User author;
 
+    private String[] labels;
+
     public Post(String title, String description, User author) {
         this.title = title;
         this.description = description;
@@ -38,6 +40,14 @@ public class Post {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public String[] getLabels() {
+        return labels;
+    }
+
+    public void setLabels(String[] labels) {
+        this.labels = labels;
     }
 
     @Override
