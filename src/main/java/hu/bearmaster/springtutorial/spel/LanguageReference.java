@@ -9,6 +9,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.time.ZoneOffset;
 import java.util.List;
@@ -19,10 +25,40 @@ public class LanguageReference {
     private static final Logger LOGGER = LoggerFactory.getLogger(LanguageReference.class);
 
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(LanguageReference.MyConfig.class);
+        //ApplicationContext context = new AnnotationConfigApplicationContext(LanguageReference.MyConfig.class);
+        expressionParser();
+    }
+
+    private static void expressionParser() {
+        ExpressionParser parser = new SpelExpressionParser();
+        Expression expression = parser.parseExpression("'Hello SpEL'");
+        String value = expression.getValue(String.class);
+        LOGGER.info("String: {}", value);
+
+        User user = User.editor("Mr. Editor", "pw");
+        Post post = Post.of("SpEL post", user);
+        post.setLabels(new String[]{"fun", "programming", "Spring"});
+        expression = parser.parseExpression("labels");
+        String[] labels = expression.getValue(post, String[].class);
+        LOGGER.info("Labels: {}", (Object) labels);
+
+        EvaluationContext evaluationContext = new StandardEvaluationContext(user);
+        evaluationContext.setVariable("myPost", post);
+        expression = parser.parseExpression("#myPost.author.username.length()");
+        Integer size = expression.getValue(evaluationContext, Integer.class);
+        LOGGER.info("Size: {}", size);
+
+        expression = parser.parseExpression("username = #myPost.title");
+        String userName = expression.getValue(evaluationContext, String.class);
+        LOGGER.info("Username: {}", userName);
+
+        User updatedUser = parser.parseExpression("#root").getValue(evaluationContext, User.class);
+        LOGGER.info("Original user: {}", user);
+        LOGGER.info("Updated user: {}", updatedUser);
     }
 
     @Configuration
+    @PropertySource("application.properties")
     public static class MyConfig {
 
         //@Bean
@@ -93,7 +129,7 @@ public class LanguageReference {
             return new Object();
         }
 
-        @Bean
+        //@Bean
         public Object misc(
                 @Value("#{postWithoutTitle.title != null ? postWithoutTitle.title : 'Untitled'}") String ternary,
                 @Value("#{postWithoutTitle.title ?: 'Untitled'}") String elvis,
@@ -106,6 +142,12 @@ public class LanguageReference {
             LOGGER.info("'Safe' title: {}", safe);
             LOGGER.info("New title: {}", newTitle);
             LOGGER.info("postWithoutTitle.title: {}", postWithoutTitle.getTitle());
+            return new Object();
+        }
+
+        @Bean
+        public Object config(@Value("#{environment['java.version']}") String userList) {
+            LOGGER.info("User list file: {}", userList);
             return new Object();
         }
 
